@@ -1,37 +1,36 @@
-import { Text, StyleSheet, View} from "react-native";
-import { colors, fontSize, radius, spacing} from "../styles/theme";
+import { View, Text, StyleSheet } from 'react-native';
+import { colors, fontSize, spacing } from '../styles/theme';
 
-type HeaderProps ={
+type HeaderProps = {
     titulo: string;
     subtitulo?: string;
 };
 
-export default function Header({titulo, subtitulo}: HeaderProps){
+export default function Header({ titulo, subtitulo }: HeaderProps) {
     return (
-        <View style = {styles.container}>
-            <Text style = {styles.titulo}>{titulo} </Text>
-            {subtitulo ? <Text style = {styles.subtitulo}>{subtitulo}
-            </Text> : null}
+        <View style={styles.container}>
+            <Text style={styles.titulo}>{titulo}</Text>
+            {subtitulo ? <Text style={styles.subtitulo}>{subtitulo}</Text> : null}
         </View>
-    )
+    );
 }
 
-const styles = StyleSheet.create ({
-    container:{
+const styles = StyleSheet.create({
+    container: {
         marginBottom: spacing.lg,
-        alignItems: 'center'
+        alignItems: 'center',
     },
-    titulo:{
+    titulo: {
         fontSize: fontSize.xl,
         fontWeight: 'bold',
         color: colors.text,
-        textAlign: 'center'
+        textAlign: 'center',
     },
-    subtitulo:{
+    subtitulo: {
         fontSize: fontSize.md,
-        color: colors.textlight,
+        color: colors.textLight,
         marginTop: spacing.xs,
         textAlign: 'center',
-        lineHeight: 22
-    }
-})
+        lineHeight: 22,
+    },
+});

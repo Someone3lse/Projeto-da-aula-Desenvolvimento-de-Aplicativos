@@ -3,17 +3,28 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
+import { useEffect } from 'react';
+
 import HomeScreen from './src/screens/HomeScreen';
 import NovaOcorrenciaScreen from './src/screens/NovaOcorrenciaScreen';
 import ListaOcorrenciasScreen from './src/screens/ListaOcorrenciasScreen';
 import { colors, fontSize } from './src/styles/theme';
-import {buscarOcorrencias, salvarOcorrencias} from'./src/services/storage';
+import { criarOcorrencia, listarOcorrenciaPorSlug, SLUG_ALUNO } from './src/services/api';
+
+export { 
+  criarOcorrencia, 
+  listarOcorrenciaPorSlug,
+  SLUG_ALUNO
+  } from './src/services/api';
 
 export type Ocorrencia = {
   id: string;
   titulo: string;
   descricao: string;
   local: string;
+  slug?: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type RootTabParamList = {
@@ -23,15 +34,43 @@ export type RootTabParamList = {
 };
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
+
 export default function App() {
   const [ocorrencias, setOcorrencias] = useState<Ocorrencia[]>([]);
-  function adicionarOcorrencia(novaOcorrencia: Omit<Ocorrencia, 'id'>) {
-    const ocorrenciaCompleta: Ocorrencia = {
-      id: Date.now().toString(),
-      ...novaOcorrencia,
-    };
 
-    setOcorrencias((valorAtual) => [ocorrenciaCompleta, ...valorAtual]);
+  const [carregando, setCarregamento] = useState(false);
+
+  useEffect(() => {
+    carregaOcorrenciasDaApi();
+  }, []);
+
+  async function carregaOcorrenciasDaApi(){
+    try{
+      setCarregamento(true);
+      const dados = await listarOcorrenciaPorSlug(SLUG_ALUNO);
+
+      setOcorrencias(dados);
+    } catch(error){
+      console.log('Erro ao carrego ocorrecias',error);
+    }finally{
+      setCarregamento(false);
+    }
+  }
+
+  //useEffect(() => {
+  //  salvarOcorrencia(ocorrencias);
+  //}, [ocorrencias]);
+
+  async function adicionarOcorrencia(novaOcorrencia: Omit<Ocorrencia, 'id'>) {
+    const ocorrenciaCriada = await criarOcorrencia({
+      titulo : novaOcorrencia.titulo,
+      descricao : novaOcorrencia. descricao,
+      local: novaOcorrencia.local,
+      slug: SLUG_ALUNO,
+    });
+
+    setOcorrencias ((valorAtual) => [ocorrenciaCriada, ...valorAtual]);
+
   }
 
   return (
@@ -50,13 +89,12 @@ export default function App() {
               backgroundColor: colors.surface,
               borderTopColor: colors.border,
             },
-
             tabBarLabelStyle: {
               fontSize: 12,
             },
-
             tabBarIcon: ({ color, size, focused }) => {
               let iconName: keyof typeof Ionicons.glyphMap = 'home';
+
               if (route.name === 'Home') {
                 iconName = focused ? 'home' : 'home-outline';
               } else if (route.name === 'NovaOcorrencia') {
@@ -75,33 +113,28 @@ export default function App() {
             },
           })}
         >
-
           <Tab.Screen
             name="Home"
             component={HomeScreen}
             options={{ title: 'Início' }}
           />
-
           <Tab.Screen
             name="NovaOcorrencia"
             options={{ title: 'Nova' }}
           >
-
             {() => (
-              adicionarOcorrencia = { adicionarOcorrencia }
-              />
+              <NovaOcorrenciaScreen 
+              adicionarOcorrencia={adicionarOcorrencia} />
             )}
-
           </Tab.Screen>
-
           <Tab.Screen
             name="ListaOcorrencias"
             options={{ title: 'Lista' }}
           >
-
             {() => (
-              <ListaOcorrenciasScreen
-                ocorrencias={ocorrencias}
+              <ListaOcorrenciasScreen 
+              ocorrencias={ocorrencias} 
+              carregando={carregando}
               />
             )}
           </Tab.Screen>
@@ -111,4 +144,3 @@ export default function App() {
     </>
   );
 }
-

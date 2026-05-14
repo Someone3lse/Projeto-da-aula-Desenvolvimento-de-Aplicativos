@@ -1,5 +1,5 @@
 //Base  da nossa URL
-const API_URL = "http://api-ocorrencia.muapps.com.br";
+const API_URL = "https://api-ocorrencia.muapps.com.br";
 //Slug de identificação do aluno
 export const SLUG_ALUNO = "Gabriel Kewryghan Marinho Moura Rosas";
 
@@ -15,7 +15,7 @@ export type CriarOcorrenciaPayload = {
 //Função para buscar as nossa ocorrencias
 
 export async function listarOcorrenciaPorSlug(slug : string){
-    const resposta = await fetch('${API_URL}/ocorrencias?slug=${slug}');
+    const resposta = await fetch(`${API_URL}/ocorrencias?slug=${slug}`);
 
     if(!resposta.ok){
         throw new Error('Erro ao buscar ocorrencias');
@@ -24,7 +24,7 @@ export async function listarOcorrenciaPorSlug(slug : string){
     return await resposta.json();
 }
 export async function criarOcorrencia(dados: CriarOcorrenciaPayload){
-    const resposta = await fetch('${API_URL}/ocorrencias',{
+    const resposta = await fetch(`${API_URL}/ocorrencias`,{
         method: 'POST',
         headers:{
             'Content-Type' : 'application/json',

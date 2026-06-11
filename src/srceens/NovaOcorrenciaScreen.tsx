@@ -8,6 +8,7 @@ import { mostrarToast } from '../components/ToastMensagem';
 
 type Props = {
   adicionarOcorrencia: (novaOcorrencia: Omit<Ocorrencia, 'id'>) => void;
+
 };
 
 export default function NovaOcorrenciaScreen({ adicionarOcorrencia }: Props) {
@@ -16,7 +17,9 @@ export default function NovaOcorrenciaScreen({ adicionarOcorrencia }: Props) {
   const [local, setLocal] = useState('');
 
 function salvarOcorrencia() {
+
   if (!titulo.trim() || !descricao.trim() || !local.trim()) {
+
     mostrarToast(
       'error',
       'Erro ao salvar',
@@ -24,50 +27,58 @@ function salvarOcorrencia() {
     );
 
     return;
+
   }
 
   adicionarOcorrencia({
     titulo: titulo.trim(),
     descricao: descricao.trim(),
     local: local.trim(),
+
   });
 
   mostrarToast(
     'success',
     'Ocorrência cadastrada',
     'A ocorrência foi salva com sucesso.'
+
   );
 
   setTitulo('');
-
   setDescricao('');
-
   setLocal('');
 
 }
+
   return (
+
     <View style={styles.container}>
       <Header
         titulo="Nova Ocorrência"
         subtitulo="Preencha os dados abaixo para cadastrar uma nova ocorrência."
+
       />
 
       <View style={styles.formBox}>
         <Text style={styles.label}>Título</Text>
+
         <TextInput
           style={styles.input}
           placeholder="Ex.: Buraco na avenida principal"
           value={titulo}
           onChangeText={setTitulo}
+
         />
 
         <Text style={styles.label}>Descrição</Text>
+
         <TextInput
           style={[styles.input, styles.inputMaior]}
           placeholder="Descreva o problema encontrado"
           value={descricao}
           onChangeText={setDescricao}
           multiline
+
         />
 
         <Text style={styles.label}>Local</Text>
@@ -77,18 +88,21 @@ function salvarOcorrencia() {
           value={local}
           onChangeText={setLocal}
         />
-        
       </View>
       <CustomButton titulo="Salvar Ocorrência" onPress={salvarOcorrencia} />
     </View>
   );
+
 }
+
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     backgroundColor: colors.background,
     padding: spacing.lg,
     justifyContent: 'center',
+
   },
 
   formBox: {
@@ -98,6 +112,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     marginBottom: spacing.md,
+
   },
 
   label: {
@@ -106,8 +121,11 @@ const styles = StyleSheet.create({
     color: colors.text,
     marginTop: spacing.sm,
     marginBottom: spacing.xs,
+
   },
+
  
+
   input: {
     backgroundColor: colors.surface,
     borderWidth: 1,
@@ -116,11 +134,11 @@ const styles = StyleSheet.create({
     padding: spacing.sm + 2,
     fontSize: fontSize.md,
     color: colors.text,
+
   },
- 
+
   inputMaior: {
     minHeight: 100,
     textAlignVertical: 'top',
   },
 });
-

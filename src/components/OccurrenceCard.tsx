@@ -3,15 +3,29 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { colors, fontSize, radius, spacing } from '../styles/theme';
 
 type OccurrenceCardProps = {
+    id: string;
     titulo: string;
     descricao: string;
     local: string;
+    onRemover: (id: string) => Promise<void>;
+    onEditar: (
+        id: string,
+        dadosAtualizados: {
+            titulo: string;
+            descricao: string;
+            local: string;
+        }
+    ) => Promise<void>;
 };
 
+
 export default function OccurrenceCard({
+    id,
     titulo,
     descricao,
     local,
+    onRemover,
+    onEditar,
 }: OccurrenceCardProps) {
     return (
         <View style={styles.card}>
@@ -26,6 +40,29 @@ export default function OccurrenceCard({
                 <Ionicons name="location-outline" size={18} color={colors.textLight} />
                 <Text style={styles.local}>{local}</Text>
             </View>
+
+            <View style={styles.acoes}>
+                <Text
+                    style={styles.botaoEditar}
+                    onPress={() =>
+                        onEditar(id, {
+                            titulo: titulo + ' (editado)',
+                            descricao,
+                            local,
+                        })
+                    }
+                >
+                    Editar
+                </Text>
+
+                <Text
+                    style={styles.botaoExcluir}
+                    onPress={() => onRemover(id)}
+                >
+                    Excluir
+                </Text>
+            </View>
+
         </View>
     );
 }
@@ -64,5 +101,18 @@ const styles = StyleSheet.create({
         fontSize: fontSize.sm,
         color: colors.textLight,
         marginLeft: spacing.xs,
+    },
+    acoes: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: spacing.md,
+    },
+    botaoEditar: {
+        color: colors.primary,
+        fontWeight: 'bold',
+    },
+    botaoExcluir: {
+        color: colors.danger,
+        fontWeight: 'bold',
     },
 });
